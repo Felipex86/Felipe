@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Seleccionar Hoja - Datos Central Canutillar{% endblock %}
+{% block content %}
+<h2>Selecciona una hoja</h2>
+<form action="{{ url_for('process_sheet') }}" method="post" class="mt-3">
+    <input type="hidden" name="filename" value="{{ filename }}">
+    <div class="mb-3">
+        <label for="sheet" class="form-label">Hojas disponibles:</label>
+        <select name="sheet" class="form-select" required>
+            {% for sheet in sheets %}
+                <option value="{{ sheet }}">{{ sheet }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Procesar hoja</button>
+</form>
+{% endblock %}

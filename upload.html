@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Subir Archivo - Datos Central Canutillar{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">Subir Archivos</h2>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" enctype="multipart/form-data">
+        <!-- Archivo Principal -->
+        <div class="mb-3">
+            <label class="form-label">Informe (.xlsx)</label>
+            <input type="file" class="form-control" name="file" required>
+        </div>
+
+        <!-- Archivo PROGRAMA -->
+        <div class="mb-3">
+            <label class="form-label">Archivo PROGRAMA (.xlsx - Opcional)</label>
+            <input type="file" class="form-control" name="programa_file">
+        </div>
+
+        <!-- Mareas -->
+        <div class="mb-3 border p-3">
+            <h4>Mareas</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tipo (P/B)</th>
+                        <th>Hora (HH:MM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(1, 5) %}
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" 
+                                   name="tipo_{{ i }}" 
+                                   pattern="[PBpb]" 
+                                   required>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" 
+                                   name="hora_{{ i }}" 
+                                   placeholder="HH:MM"
+                                   pattern="\d{2}:\d{2}" 
+                                   required>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Subir</button>
+    </form>
+</div>
+{% endblock %}

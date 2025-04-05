@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados - Datos Central Canutillar{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --color-primary: #00B2E6;
+        --color-secondary: #FF8031;
+        --color-accent: #8BBB2F;
+        --color-text: #706F6F;
+        --bg-light: #ffffff;
+        --bg-dark: #1e1e1e;
+    }
+
+    body {
+        overflow-y: hidden;
+        font-size: 0.75rem;
+        background-color: var(--bg-light);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--color-text);
+    }
+
+    .container {
+        max-width: 100vw;
+        padding: 0.5rem;
+        position: relative; /* Necesario para el posicionamiento del reloj */
+    }
+
+    /* Reajustamos el reloj para que esté en la parte superior derecha */
+    #clock {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: right;
+        color: var(--color-text);
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        white-space: nowrap;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+        background-color: var(--bg-light);
+        border-radius: 8px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Tamaños específicos de las tarjetas */
+    .card-dato-lago {
+        max-width: 320px;
+        max-height: 450px;
+    }
+
+    .card-grafico {
+        max-width: 350px;
+        max-height: 320px;
+    }
+
+    .card-pronostico {
+        max-width: 320px;
+        max-height: 450px;
+    }
+
+    .card-costos {
+        max-width: 400px;
+        max-height: 350px;
+    }
+
+    .card-mareas {
+        max-width: 400px;
+        max-height: 350px;
+    }
+
+    .card-agua-caida {
+        max-width: 100%;
+        max-height: 400px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+
+    .list-group-item,
+    .table th,
+    .table td {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.5rem;
+        line-height: 1.2;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 0.3rem;
+        border-radius: 0.25rem;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .grid-two-cols {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .grid-three-cols {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .thead-dark th {
+        background-color: var(--color-primary);
+        color: #fff;
+        border-color: #454d55;
+    }
+
+    .thead-light th {
+        background-color: var(--bg-light);
+        color: var(--color-text);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: var(--color-accent);
+        color: #fff;
+    }
+
+    /* Cards accent */
+    .card-dato-lago {
+        border-left: 5px solid var(--color-primary);
+    }
+
+    .card-grafico {
+        border-left: 5px solid var(--color-secondary);
+    }
+
+    .card-pronostico {
+        border-left: 5px solid var(--color-accent);
+    }
+
+    .card-costos {
+        border-left: 5px solid var(--color-secondary);
+    }
+
+    .card-mareas {
+        border-left: 5px solid var(--color-accent);
+    }
+
+    .card-agua-caida {
+        border-left: 5px solid var(--color-primary);
+    }
+
+</style>
+
+<div class="container mt-2">
+    <div class="d-flex justify-content-end align-items-center mb-2" style="height: 25px;">
+        <div id="clock" class="text-dark small"></div>
+    </div>
+
+    <!-- Reloj -->
+    <script>
+        function updateClock() {
+            const options = { timeZone: 'America/Santiago', hour12: false, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('clock').innerText = new Date().toLocaleString('es-CL', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+
+    <!-- Secciones en grid -->
+    <div class="grid-three-cols">
+        <!-- Datos Lago -->
+        <div class="card shadow-sm rounded card-dato-lago">
+            <div class="card-body">
+                <h3 class="text-dark">📌 Lago Chapo</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Cota Lago:</strong> {{ "%.2f"|format(ultima_fila.B) }}</li>
+                    <li class="list-group-item"><strong>Vol. Emb:</strong> {{ "%.2f"|format(ultima_fila.E) }}</li>
+                    <li class="list-group-item"><strong>Ener. Emb:</strong> {{ "%.2f"|format(ultima_fila.F) }}</li>
+                    <li class="list-group-item"><strong>Vol. Reg:</strong> {{ "%.2f"|format(ultima_fila.G * 100) }}%</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Gráfico -->
+        <div class="card shadow-sm rounded card-grafico text-center">
+            <div class="card-body">
+                <h3 class="text-dark">📉 Últimos 7 días</h3>
+                <img src="data:image/png;base64,{{ plot_url }}" class="img-fluid rounded shadow">
+            </div>
+        </div>
+
+        <!-- Precipitaciones -->
+        <div class="card shadow-sm rounded card-pronostico">
+            <div class="card-body">
+                <h3 class="text-dark">🌧️ Pronóstico</h3>
+                {% if forecast %}
+                    <ul class="list-group list-group-flush">
+                        {% for day in forecast %}
+                        <li class="list-group-item"><strong>{{ day.date }}:</strong> {{ day.precip }} mm</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No disponible.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Costos y Mareas en 2 columnas -->
+    <div class="grid-two-cols">
+        {% if programa_data %}
+        <div class="card shadow-sm rounded card-costos">
+            <div class="card-body">
+                <h3 class="text-dark">💰 Costos Marginales</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for hora in range(1, 25) %}
+                                <th>{{ hora }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for valor in programa_data %}
+                                <td>{{ "%.2f"|format(valor) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if manual_data %}
+        <div class="card shadow-sm rounded card-mareas">
+            <div class="card-body">
+                <h3 class="text-dark">⏳ Mareas</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dato in manual_data %}
+                            <tr>
+                                <td>{{ dato.tipo }}</td>
+                                <td>{{ dato.hora }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Agua Caída -->
+    <div class="card shadow-sm rounded card-agua-caida mt-1">
+        <div class="card-body">
+            <h3 class="text-dark">💧 Agua caída - Últimos 7 días</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm text-center">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Día</th>
+                            <th>Agua Caída (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dato in hidrologia %}
+                        <tr>
+                            <td>{{ dato.fecha }}</td>
+                            <td>{{ dato.agua }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="font-weight-bold table-secondary">
+                            <td>Total del mes</td>
+                            <td>{{ total_hidrologia }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
